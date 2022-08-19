@@ -1,5 +1,6 @@
 package com.sivalabs.devzone.links.web.controller;
 
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.jwt.Claim;
@@ -12,12 +13,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest
-public class LinksControllerTest {
+@TestHTTPEndpoint(LinkController.class)
+public class LinkControllerTest {
 
     @Test
     public void getLinks() {
         given()
-          .when().get("/api/links?page=1")
+          .when().get("?page=1")
           .then().statusCode(200)
           .assertThat()
                 .body("totalElements", greaterThan(0))
@@ -34,7 +36,7 @@ public class LinksControllerTest {
     @Test
     public void searchLinks() {
         given()
-                .when().get("/api/links?query=spring")
+                .when().get("?query=spring")
                 .then()
                 .statusCode(200)
                 .assertThat()
@@ -52,7 +54,7 @@ public class LinksControllerTest {
     @Test
     public void getLinksByTag() {
         given()
-                .when().get("/api/links?tag=java")
+                .when().get("?tag=java")
                 .then()
                 .statusCode(200)
                 .assertThat()
@@ -70,7 +72,7 @@ public class LinksControllerTest {
     @Test
     public void getLinkById() {
         given()
-                .when().get("/api/links/1")
+                .when().get("/1")
                 .then().statusCode(200);
     }
 
@@ -89,7 +91,7 @@ public class LinksControllerTest {
                         }
                         """)
                 .contentType(ContentType.JSON)
-                .when().post("/api/links")
+                .when().post()
                 .then().statusCode(201);
     }
 
@@ -100,7 +102,7 @@ public class LinksControllerTest {
     })
     public void deleteLinkById() {
         given()
-                .when().delete("/api/links/1")
+                .when().delete("/1")
                 .then().statusCode(204);
     }
 }
