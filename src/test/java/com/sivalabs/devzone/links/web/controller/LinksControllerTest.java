@@ -1,0 +1,95 @@
+package com.sivalabs.devzone.links.web.controller;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Test;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+
+@QuarkusTest
+public class LinksControllerTest {
+
+    @Test
+    public void getLinks() {
+        given()
+          .when().get("/api/links?page=1")
+          .then().statusCode(200)
+          .assertThat()
+                .body("totalElements", greaterThan(0))
+                .body("totalPages", greaterThan(0))
+                .body("pageNumber", equalTo(1))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(false))
+                .body("hasNext", equalTo(true))
+                .body("hasPrevious", equalTo(false))
+                .body("data.size()", equalTo(10))
+        ;
+    }
+
+    @Test
+    public void searchLinks() {
+        given()
+                .when().get("/api/links?query=spring")
+                .then()
+                .statusCode(200)
+                .assertThat()
+                .body("totalElements", greaterThan(0))
+                .body("totalPages", greaterThan(0))
+                .body("pageNumber", equalTo(1))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(false))
+                .body("hasNext", equalTo(true))
+                .body("hasPrevious", equalTo(false))
+                .body("data.size()", equalTo(10))
+                ;
+    }
+
+    @Test
+    public void getLinksByTag() {
+        given()
+                .when().get("/api/links?tag=java")
+                .then()
+                .statusCode(200)
+                .assertThat()
+                .body("totalElements", greaterThan(0))
+                .body("totalPages", greaterThan(0))
+                .body("pageNumber", equalTo(1))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(false))
+                .body("hasNext", equalTo(true))
+                .body("hasPrevious", equalTo(false))
+                .body("data.size()", equalTo(10))
+        ;
+    }
+
+    @Test
+    public void getLinkById() {
+        given()
+                .when().get("/api/links/1")
+                .then().statusCode(200);
+    }
+
+    @Test
+    public void createLink() {
+        given()
+                .body("""
+                        {
+                            "title": "SivaLabs Blog",
+                            "url": "https://sivalabs.in",
+                            "tags": ["java", "spring-boot"]
+                        }
+                        """)
+                .contentType(ContentType.JSON)
+                .when().post("/api/links")
+                .then().statusCode(201);
+    }
+
+    @Test
+    public void deleteLinkById() {
+        given()
+                .when().delete("/api/links/1")
+                .then().statusCode(204);
+    }
+}
