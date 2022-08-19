@@ -62,7 +62,7 @@ public class LinkRepository implements PanacheRepository<Link> {
         long totalElements = queryTotal.getSingleResult();
         int totalPages = (int) ((totalElements / PAGE_SIZE) + 1);
 
-        TypedQuery<Link> dataQuery = em.createQuery("select l from Link l where l.id in :ids", Link.class);
+        TypedQuery<Link> dataQuery = em.createQuery("select l from Link l where l.id in :ids order by l.createdAt desc", Link.class);
         dataQuery.setParameter("ids", ids);
         var linkDTOS = dataQuery.getResultList().stream().map(linkMapper::toDTO).toList();
 

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,6 +26,7 @@ public class PageMetadataController {
 
     @GET
     @Path("/page-metadata")
+    @PermitAll
     public Map<String, String> getPageMetadata(@QueryParam("url") String url) {
         Map<String, String> metadata = new ConcurrentHashMap<>();
         try {

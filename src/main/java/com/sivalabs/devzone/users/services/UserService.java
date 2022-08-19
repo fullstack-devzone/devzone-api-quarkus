@@ -37,4 +37,18 @@ public class UserService {
         userEntity.setRole(user.getRole());
         return UserDTO.fromEntity(userRepository.save(userEntity));
     }
+
+    public Optional<UserDTO> login(String email, String password) {
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        if(byEmail.isEmpty()) {
+            return Optional.empty();
+        }
+        User user = byEmail.orElseThrow();
+        if(passwordEncoder.matching(password, user.getPassword())) {
+            var userDTO = UserDTO.fromEntity(user);
+            userDTO.setPassword(null);
+            return Optional.of(userDTO);
+        }
+        return Optional.empty();
+    }
 }

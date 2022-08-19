@@ -5,6 +5,7 @@ import com.sivalabs.devzone.links.services.LinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,6 +22,7 @@ public class TagController {
     private final LinkService linkService;
 
     @GET
+    @PermitAll
     public List<Tag> allTags() {
         return linkService.findAllTags();
     }

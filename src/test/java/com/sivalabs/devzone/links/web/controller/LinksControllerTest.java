@@ -1,6 +1,9 @@
 package com.sivalabs.devzone.links.web.controller;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
+import io.quarkus.test.security.jwt.Claim;
+import io.quarkus.test.security.jwt.JwtSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
@@ -72,6 +75,10 @@ public class LinksControllerTest {
     }
 
     @Test
+    @TestSecurity(user = "siva", roles = {"ROLE_USER"})
+    @JwtSecurity(claims = {
+            @Claim(key = "email", value = "siva@gmail.com")
+    })
     public void createLink() {
         given()
                 .body("""
@@ -87,6 +94,10 @@ public class LinksControllerTest {
     }
 
     @Test
+    @TestSecurity(user = "admin", roles = {"ROLE_ADMIN"})
+    @JwtSecurity(claims = {
+            @Claim(key = "email", value = "admin@gmail.com")
+    })
     public void deleteLinkById() {
         given()
                 .when().delete("/api/links/1")
