@@ -4,18 +4,17 @@ import com.sivalabs.devzone.users.entities.RoleEnum;
 import com.sivalabs.devzone.users.models.CreateUserRequest;
 import com.sivalabs.devzone.users.models.UserDTO;
 import com.sivalabs.devzone.users.services.UserService;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -38,13 +37,12 @@ public class UserController {
     @POST
     public Response createUser(@Valid CreateUserRequest createUserRequest) {
         log.info("process=create_user, user_email={}", createUserRequest.getEmail());
-        UserDTO userDTO =
-                new UserDTO(
-                        null,
-                        createUserRequest.getName(),
-                        createUserRequest.getEmail(),
-                        createUserRequest.getPassword(),
-                        RoleEnum.ROLE_USER);
+        UserDTO userDTO = new UserDTO(
+                null,
+                createUserRequest.getName(),
+                createUserRequest.getEmail(),
+                createUserRequest.getPassword(),
+                RoleEnum.ROLE_USER);
         UserDTO user = userService.createUser(userDTO);
         return Response.status(Response.Status.CREATED).entity(user).build();
     }

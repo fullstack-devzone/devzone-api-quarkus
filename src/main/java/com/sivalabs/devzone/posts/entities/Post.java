@@ -1,52 +1,50 @@
-package com.sivalabs.devzone.users.entities;
+package com.sivalabs.devzone.posts.entities;
 
+import com.sivalabs.devzone.users.entities.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "users")
 @Setter
 @Getter
-public class User implements Serializable {
-
+@Entity
+@Table(name = "posts")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Post implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
-    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq", allocationSize = 100)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "post_id_generator")
+    @SequenceGenerator(name = "post_id_generator", sequenceName = "post_id_seq", allocationSize = 100)
     private Long id;
 
     @Column(nullable = false)
     @NotEmpty()
-    private String name;
-
-    @Column(nullable = false, unique = true)
-    @NotEmpty
-    @Email(message = "Invalid email")
-    private String email;
+    private String title;
 
     @Column(nullable = false)
-    @NotEmpty
-    @Size(min = 4)
-    private String password;
+    @NotEmpty()
+    private String url;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;

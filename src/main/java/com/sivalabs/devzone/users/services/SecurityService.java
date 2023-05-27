@@ -2,10 +2,8 @@ package com.sivalabs.devzone.users.services;
 
 import com.sivalabs.devzone.users.entities.RoleEnum;
 import com.sivalabs.devzone.users.entities.User;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Arrays;
-
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class SecurityService {

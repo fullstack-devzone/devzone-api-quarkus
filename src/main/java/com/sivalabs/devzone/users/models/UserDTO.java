@@ -3,12 +3,11 @@ package com.sivalabs.devzone.users.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sivalabs.devzone.users.entities.RoleEnum;
 import com.sivalabs.devzone.users.entities.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor

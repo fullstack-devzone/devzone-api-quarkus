@@ -1,16 +1,14 @@
 package com.sivalabs.devzone.users.services;
 
 import com.sivalabs.devzone.common.exceptions.DevZoneException;
-import com.sivalabs.devzone.users.entities.RoleEnum;
 import com.sivalabs.devzone.users.entities.User;
 import com.sivalabs.devzone.users.models.UserDTO;
 import com.sivalabs.devzone.users.repositories.UserRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
-import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -40,11 +38,11 @@ public class UserService {
 
     public Optional<UserDTO> login(String email, String password) {
         Optional<User> byEmail = userRepository.findByEmail(email);
-        if(byEmail.isEmpty()) {
+        if (byEmail.isEmpty()) {
             return Optional.empty();
         }
         User user = byEmail.orElseThrow();
-        if(passwordEncoder.matching(password, user.getPassword())) {
+        if (passwordEncoder.matching(password, user.getPassword())) {
             var userDTO = UserDTO.fromEntity(user);
             userDTO.setPassword(null);
             return Optional.of(userDTO);

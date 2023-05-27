@@ -1,15 +1,12 @@
 package com.sivalabs.devzone.config.security;
 
+import com.sivalabs.devzone.users.models.UserDTO;
+import io.smallrye.jwt.build.Jwt;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Set;
-
-import com.sivalabs.devzone.users.models.UserDTO;
 import org.eclipse.microprofile.jwt.Claims;
-
-import io.smallrye.jwt.build.Jwt;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class JwtTokenUtils {

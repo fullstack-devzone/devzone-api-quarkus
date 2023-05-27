@@ -1,20 +1,16 @@
-package com.sivalabs.devzone.links.models;
+package com.sivalabs.devzone.posts.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sivalabs.devzone.links.entities.Link;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
 @NoArgsConstructor
-//@AllArgsConstructor
-public class LinksDTO {
-    private List<LinkDTO> data;
+public class PostsDTO {
+    private List<PostDTO> data;
     private long totalElements;
     private int pageNumber;
     private int totalPages;
@@ -31,7 +27,7 @@ public class LinksDTO {
     @JsonProperty("hasPrevious")
     private boolean hasPrevious;
 
-    public LinksDTO(List<LinkDTO> data, long totalElements, int totalPages, int pageNumber) {
+    public PostsDTO(List<PostDTO> data, long totalElements, int totalPages, int pageNumber) {
         this.setData(data);
         this.setTotalElements(totalElements);
         this.setPageNumber(pageNumber);

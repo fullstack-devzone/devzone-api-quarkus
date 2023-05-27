@@ -1,8 +1,7 @@
 package com.sivalabs.devzone.users.services;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
-
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class PasswordEncoder {
