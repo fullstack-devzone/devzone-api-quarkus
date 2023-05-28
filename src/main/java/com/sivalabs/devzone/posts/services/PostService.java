@@ -1,8 +1,9 @@
 package com.sivalabs.devzone.posts.services;
 
+import com.sivalabs.devzone.common.models.PagedResult;
 import com.sivalabs.devzone.posts.entities.Post;
+import com.sivalabs.devzone.posts.models.CreatePostRequest;
 import com.sivalabs.devzone.posts.models.PostDTO;
-import com.sivalabs.devzone.posts.models.PostsDTO;
 import com.sivalabs.devzone.posts.repositories.PostRepository;
 import com.sivalabs.devzone.users.repositories.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,11 +20,11 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public PostsDTO getAllPosts(int page) {
+    public PagedResult<PostDTO> getAllPosts(int page) {
         return postRepository.getAllPosts(page);
     }
 
-    public PostsDTO searchPosts(String query, int page) {
+    public PagedResult<PostDTO> searchPosts(String query, int page) {
         return postRepository.searchByTitle(query, page);
     }
 
@@ -31,19 +32,23 @@ public class PostService {
         return postRepository.getPostById(id);
     }
 
-    public PostDTO createPost(PostDTO post) {
+    public PostDTO createPost(CreatePostRequest createPostRequest) {
         Post entity = new Post();
-        entity.setTitle(post.getTitle());
-        entity.setUrl(post.getUrl());
-        entity.setContent(post.getContent());
-        entity.setCreatedBy(userRepository.findById(post.getCreatedUserId()));
+        entity.setTitle(createPostRequest.getTitle());
+        entity.setUrl(createPostRequest.getUrl());
+        entity.setContent(createPostRequest.getContent());
+        entity.setCreatedBy(userRepository.findById(createPostRequest.getUserId()));
 
         postRepository.persist(entity);
-        post.setId(entity.getId());
-        return post;
+
+        return PostDTO.from(entity);
     }
 
     public void deletePost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    public void deleteAllPosts() {
+        postRepository.deleteAll();
     }
 }

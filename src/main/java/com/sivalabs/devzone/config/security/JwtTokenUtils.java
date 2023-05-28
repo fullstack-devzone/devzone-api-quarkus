@@ -1,6 +1,6 @@
 package com.sivalabs.devzone.config.security;
 
-import com.sivalabs.devzone.users.models.UserDTO;
+import com.sivalabs.devzone.users.entities.User;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import org.eclipse.microprofile.jwt.Claims;
 @ApplicationScoped
 public class JwtTokenUtils {
 
-    public String generateToken(UserDTO user) {
+    public String generateToken(User user) {
         return Jwt.issuer("https://sivalabs.in/issuer")
                 .subject(String.valueOf(user.getId()))
                 .expiresAt(LocalDateTime.now().plusDays(7).toInstant(ZoneOffset.UTC))

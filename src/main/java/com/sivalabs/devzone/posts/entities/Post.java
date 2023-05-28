@@ -29,7 +29,7 @@ import lombok.Setter;
 public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "post_id_generator")
-    @SequenceGenerator(name = "post_id_generator", sequenceName = "post_id_seq", allocationSize = 100)
+    @SequenceGenerator(name = "post_id_generator", sequenceName = "post_id_seq")
     private Long id;
 
     @Column(nullable = false)

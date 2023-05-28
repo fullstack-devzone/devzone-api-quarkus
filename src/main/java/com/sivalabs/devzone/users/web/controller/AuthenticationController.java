@@ -1,10 +1,10 @@
 package com.sivalabs.devzone.users.web.controller;
 
 import com.sivalabs.devzone.config.security.JwtTokenUtils;
+import com.sivalabs.devzone.users.entities.User;
 import com.sivalabs.devzone.users.models.AuthUserDTO;
 import com.sivalabs.devzone.users.models.AuthenticationRequest;
 import com.sivalabs.devzone.users.models.AuthenticationResponse;
-import com.sivalabs.devzone.users.models.UserDTO;
 import com.sivalabs.devzone.users.services.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
@@ -32,11 +32,11 @@ public class AuthenticationController {
     @Path("/login")
     @PermitAll
     public Response createAuthenticationToken(@Valid AuthenticationRequest credentials) {
-        Optional<UserDTO> userDTOOptional = userService.login(credentials.getUsername(), credentials.getPassword());
+        Optional<User> userDTOOptional = userService.login(credentials.getUsername(), credentials.getPassword());
         if (userDTOOptional.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        UserDTO user = userDTOOptional.orElseThrow();
+        User user = userDTOOptional.orElseThrow();
         String token = jwtTokenUtils.generateToken(user);
         var response = new AuthenticationResponse(
                 token,

@@ -1,5 +1,6 @@
 package com.sivalabs.devzone.users.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,8 +13,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.Instant;
 import lombok.Getter;
@@ -27,21 +27,21 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
-    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq", allocationSize = 100)
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq")
     private Long id;
 
     @Column(nullable = false)
-    @NotEmpty()
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @Column(nullable = false, unique = true)
-    @NotEmpty
-    @Email(message = "Invalid email")
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Invalid email address")
     private String email;
 
     @Column(nullable = false)
-    @NotEmpty
-    @Size(min = 4)
+    @NotBlank(message = "Password cannot be blank")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(nullable = false)
@@ -62,5 +62,15 @@ public class User implements Serializable {
     @PreUpdate
     public void onUpdate() {
         updatedAt = Instant.now();
+    }
+
+    public User() {}
+
+    public User(Long id, String name, String email, String password, RoleEnum role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 }

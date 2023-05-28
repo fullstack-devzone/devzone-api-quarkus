@@ -3,7 +3,7 @@ package com.sivalabs.devzone.posts.services;
 import com.opencsv.CSVIterator;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import com.sivalabs.devzone.posts.models.PostDTO;
+import com.sivalabs.devzone.posts.models.CreatePostRequest;
 import com.sivalabs.devzone.users.services.UserService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +24,9 @@ public class PostsImportService {
     private final UserService userService;
 
     public void importPosts(String fileName) throws IOException, CsvValidationException {
+        postService.deleteAllPosts();
+        log.info("Delete all existing posts");
+
         log.info("Importing posts from file: {}", fileName);
         long count = 0L;
         InputStream inputStream = this.getClass().getResourceAsStream(fileName);
@@ -34,19 +36,18 @@ public class PostsImportService {
             csvReader.skip(1);
             CSVIterator iterator = new CSVIterator(csvReader);
 
+            Long userId =
+                    userService.getUserByEmail(SYSTEM_USER_EMAIL).orElseThrow().getId();
+
             while (iterator.hasNext()) {
                 String[] nextLine = iterator.next();
-                PostDTO postDTO = new PostDTO();
-                postDTO.setUrl(nextLine[0]);
-                postDTO.setTitle(nextLine[1]);
-                postDTO.setContent(nextLine[1]);
-                postDTO.setCreatedUserId(userService
-                        .getUserByEmail(SYSTEM_USER_EMAIL)
-                        .orElseThrow()
-                        .getId());
-                postDTO.setCreatedAt(Instant.now());
+                CreatePostRequest createPostRequest = new CreatePostRequest();
+                createPostRequest.setUrl(nextLine[0]);
+                createPostRequest.setTitle(nextLine[1]);
+                createPostRequest.setContent(nextLine[1]);
+                createPostRequest.setUserId(userId);
 
-                postService.createPost(postDTO);
+                postService.createPost(createPostRequest);
                 count++;
             }
         }

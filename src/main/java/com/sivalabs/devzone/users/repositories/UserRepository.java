@@ -16,8 +16,8 @@ public class UserRepository implements PanacheRepository<User> {
         return findByEmail(email).isPresent();
     }
 
-    public User save(User userEntity) {
-        persist(userEntity);
-        return userEntity;
+    public User save(User user) {
+        persist(user);
+        return user;
     }
 }

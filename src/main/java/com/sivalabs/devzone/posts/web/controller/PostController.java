@@ -1,8 +1,9 @@
 package com.sivalabs.devzone.posts.web.controller;
 
 import com.sivalabs.devzone.common.exceptions.ResourceNotFoundException;
+import com.sivalabs.devzone.common.models.PagedResult;
+import com.sivalabs.devzone.posts.models.CreatePostRequest;
 import com.sivalabs.devzone.posts.models.PostDTO;
-import com.sivalabs.devzone.posts.models.PostsDTO;
 import com.sivalabs.devzone.posts.services.PostService;
 import com.sivalabs.devzone.users.entities.User;
 import com.sivalabs.devzone.users.services.UserService;
@@ -42,7 +43,7 @@ public class PostController {
 
     @GET
     @PermitAll
-    public PostsDTO findAllPosts(
+    public PagedResult<PostDTO> getPosts(
             @QueryParam("page") @DefaultValue("1") int page, @QueryParam("query") @DefaultValue("") String query) {
         if (StringUtils.isNotEmpty(query)) {
             log.info("Searching posts for {} with page: {}", query, page);
@@ -56,7 +57,7 @@ public class PostController {
     @GET
     @Path("/{id}")
     @PermitAll
-    public PostDTO getPost(@PathParam("id") Long id) {
+    public PostDTO getPostById(@PathParam("id") Long id) {
         return postService
                 .getPostById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post with id: " + id + " not found"));
@@ -64,11 +65,12 @@ public class PostController {
 
     @POST
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public Response createPost(@Valid PostDTO post, @Context UriInfo uriInfo, @Context SecurityContext ctx) {
+    public Response createPost(
+            @Valid CreatePostRequest createPostRequest, @Context UriInfo uriInfo, @Context SecurityContext ctx) {
         String email = jwt.getClaim("email");
         User user = userService.getUserByEmail(email).orElseThrow();
-        post.setCreatedUserId(user.getId());
-        PostDTO postDTO = postService.createPost(post);
+        createPostRequest.setUserId(user.getId());
+        PostDTO postDTO = postService.createPost(createPostRequest);
         URI uri = uriInfo.getAbsolutePathBuilder()
                 .path(Long.toString(postDTO.getId()))
                 .build();
@@ -82,7 +84,7 @@ public class PostController {
         PostDTO post = postService.getPostById(id).orElseThrow();
         String email = jwt.getClaim("email");
         User user = userService.getUserByEmail(email).orElseThrow();
-        if (ctx.isUserInRole("ROLE_ADMIN") || Objects.equals(post.getCreatedUserId(), user.getId())) {
+        if (ctx.isUserInRole("ROLE_ADMIN") || Objects.equals(post.getCreatedBy().getId(), user.getId())) {
             postService.deletePost(post.getId());
             return Response.noContent().build();
         }

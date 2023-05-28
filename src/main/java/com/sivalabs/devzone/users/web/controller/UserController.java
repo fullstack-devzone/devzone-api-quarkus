@@ -1,8 +1,8 @@
 package com.sivalabs.devzone.users.web.controller;
 
 import com.sivalabs.devzone.users.entities.RoleEnum;
+import com.sivalabs.devzone.users.entities.User;
 import com.sivalabs.devzone.users.models.CreateUserRequest;
-import com.sivalabs.devzone.users.models.UserDTO;
 import com.sivalabs.devzone.users.services.UserService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -30,20 +30,20 @@ public class UserController {
         log.info("process=get_user, user_id={}", id);
         return userService
                 .getUserById(id)
-                .map(userDTO -> Response.ok(userDTO).build())
+                .map(user -> Response.ok(user).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
     @POST
     public Response createUser(@Valid CreateUserRequest createUserRequest) {
         log.info("process=create_user, user_email={}", createUserRequest.getEmail());
-        UserDTO userDTO = new UserDTO(
+        User user = new User(
                 null,
                 createUserRequest.getName(),
                 createUserRequest.getEmail(),
                 createUserRequest.getPassword(),
                 RoleEnum.ROLE_USER);
-        UserDTO user = userService.createUser(userDTO);
-        return Response.status(Response.Status.CREATED).entity(user).build();
+        User userSaved = userService.createUser(user);
+        return Response.status(Response.Status.CREATED).entity(userSaved).build();
     }
 }
